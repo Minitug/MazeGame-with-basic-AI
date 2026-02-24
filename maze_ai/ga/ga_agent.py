@@ -2,8 +2,8 @@ import sys
 import time
 import random
 from copy import deepcopy
-from GameCode.maze_env import Maze
-from GameCode.levels import Levels
+from core.maze_env import Maze
+from core.levels import Levels
 
 def crossover(parent1, parent2):
     if len(parent1) > 1:
@@ -134,7 +134,7 @@ while generation <= MAX_GENERATIONS:
     if time.time() - last_champion_time > 10:
         last_champion_time = time.time()
         print (f"No improvement for 10 seconds, working on generation {generation}...")
-        print(f"Generations since last champion: {generation - last_generation_print}")
+        print(f"Generations since last check in: {generation - last_generation_print}")
         last_generation_print = generation
         print(f"Time since last start: {int(time.time() - start_time)} seconds")
 

@@ -1,5 +1,5 @@
-from maze_env import Maze
-from levels import Levels
+from core.maze_env import Maze
+from core.levels import Levels
 
 for level_name, level_grid in Levels.items():
     maze = Maze(level_grid)

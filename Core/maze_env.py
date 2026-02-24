@@ -82,6 +82,15 @@ class Maze:
         if self.grid[new_row][new_col] == 'g' and self.coins_missing == 0:
             self.total_moves += 1
             self.goal_reached = True
+            
+            if (self.player_row, self.player_col) == (self.goal_row, self.goal_col):
+                self.grid[self.player_row][self.player_col] = 'g'
+            else:
+                self.grid[self.player_row][self.player_col] = '.'
+
+            self.grid[new_row][new_col] = 'P'
+            self.player_row, self.player_col = new_row, new_col
+
             if self.verbose:
                 print("Congratulations! You've reached the goal in {} moves!".format(self.total_moves))
             return
