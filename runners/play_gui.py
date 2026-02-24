@@ -7,7 +7,6 @@ from tkinter import messagebox
 
 quit = False
 
-
 for level_name, level_grid in Levels.items():
     maze = Maze(level_grid, verbose = False)
     renderer = Renderer(maze)
@@ -22,7 +21,6 @@ for level_name, level_grid in Levels.items():
         elif direction:
             maze.move_player(direction)
         
-
         if maze.trap_triggered:
             maze.reset_level(level_grid)
 

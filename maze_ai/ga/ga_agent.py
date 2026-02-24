@@ -53,6 +53,7 @@ last_best_fitness = float('-inf')
 agent_found_goal = False
 current_champions_generation = 0
 distance_to_coins = []
+generational_improvements = []
 
 level_name = "Level5"
 level_grid = Levels[level_name]
@@ -115,6 +116,13 @@ while generation <= MAX_GENERATIONS:
 
     if champion_fitness > last_best_fitness:
         last_best_fitness = champion_fitness
+
+        generational_improvements.append({
+            "generation": generation,
+            "champion": champion_sequence,
+            "other_agents": [seq for seq, *_ in results[1:]]
+        })
+
         print(f"Generation {generation}: New champion: Fitness {champion_fitness}, Steps {champion_steps}, Invalid {champion_invalid}, Sequence: {champion_sequence}")
         last_champion_time = time.time()
         print(f"Time since start: {int(time.time() - start_time)} seconds")
