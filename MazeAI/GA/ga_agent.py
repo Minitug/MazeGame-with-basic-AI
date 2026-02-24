@@ -27,11 +27,6 @@ def replay_sequence(sequence, level_grid):
         maze.move_player(move)
         maze.print_level()
 
-        # print(f"Step {i}: Move {move}")
-        # print(f"Position: ({maze.player_row}, {maze.player_col})")
-        # print(f"Valid move: {maze.is_move_valid}")
-        # print(f"Coins missing: {maze.coins_missing}")
-
         if maze.trap_triggered:
             print("💥 Trap triggered!")
             break
@@ -84,11 +79,10 @@ while generation <= MAX_GENERATIONS:
             steps_taken += 1
             invalid_moves += 0 if maze.is_move_valid else 1
 
-            if maze.goal_reached: #or maze.trap_triggered:
+            if maze.goal_reached: 
                 used_sequence = sequence[:step+1]
                 break
             if maze.trap_triggered:
-                # used_sequence = sequence[:step+1]
                 break
 
         if maze.coins_missing > 0:
@@ -98,44 +92,26 @@ while generation <= MAX_GENERATIONS:
 
             min_distance_to_coin = min(distance_to_coins) if distance_to_coins else 0   
 
-
-        # Compute fitness
         fitness = (starting_coins - maze.coins_missing) * 150
         fitness -= invalid_moves
-        # fitness -= steps_taken
         if maze.coins_missing > 0:
-            fitness -= min_distance_to_coin # penalise distance to nearest coin
-            #print(min_distance_to_coin)
+            fitness -= min_distance_to_coin 
 
         if maze.trap_triggered:
             fitness -= 150
-
         elif maze.goal_reached:
-            fitness += 10000 - steps_taken  # reward faster wins
-            fitness -= invalid_moves * 9  # penalise invalid moves
+            fitness += 10000 - steps_taken  
+            fitness -= invalid_moves * 9  
             agent_found_goal = True
         elif maze.coins_missing == 0:
             distance = abs(maze.player_row - maze.goal_row) + abs(maze.player_col - maze.goal_col)
-            fitness -= distance  # penalise distance to goal
+            fitness -= distance
 
-        # print (f"Seq: {used_sequence}, Fit: {fitness}, Steps: {steps_taken}, Invalid: {invalid_moves}")
         results.append((used_sequence, fitness, steps_taken, invalid_moves))
 
-
-    # print("\n--- Before sorting ---")
-    # for seq, fit, steps, inv in results:
-    #     print(f"Seq: {seq}, Fit: {fit}, Steps: {steps}, Invalid: {inv}")
-
-    # Sort by fitness descending
     results.sort(key=lambda x: x[1], reverse=True)
 
     champion_sequence, champion_fitness, champion_steps, champion_invalid = results[0]
-    
-
-    # print("\nChampion:")
-    # print(f"Seq: {champion_sequence}, Fit: {champion_fitness}, Steps: {champion_steps}, Invalid: {champion_invalid}")
-
-    # print(f"Generation {generation} - Best fitness: {champion_fitness}, Steps: {champion_steps}, Invalid moves: {champion_invalid}")
 
     if champion_fitness > last_best_fitness:
         last_best_fitness = champion_fitness
@@ -149,7 +125,6 @@ while generation <= MAX_GENERATIONS:
             max_steps = champion_steps - 1
     elif champion_fitness < last_best_fitness:
         print(f"Warning: Champion fitness decreased from {last_best_fitness} to {champion_fitness}!")
-        # print("\n--- After sorting ---")
         last_best_fitness = champion_fitness
         print(f"Last champion: {last_champion}")
         for seq, fit, steps, inv in results:
@@ -163,16 +138,10 @@ while generation <= MAX_GENERATIONS:
         last_generation_print = generation
         print(f"Time since last start: {int(time.time() - start_time)} seconds")
 
-    # Select elites
     elite_count = max(2, POPULATION // 5)
     elites = [seq for seq, fit, s, inv in results[:elite_count]]
 
-    # print("\nElites:")
-    # for i, seq in enumerate(elites, 1):
-        # print(f"{i}: {seq}")
-
-    # Build new population
-    new_population = [deepcopy(champion_sequence)]  # always keep champion
+    new_population = [deepcopy(champion_sequence)]  
     while len(new_population) < POPULATION:
         parent1 = random.choice(elites)
         parent2 = random.choice(elites)
@@ -182,12 +151,9 @@ while generation <= MAX_GENERATIONS:
 
     population = new_population
 
-
-    # Increment max_steps periodically
     if generation % max_steps_increment_interval == 0 and not agent_found_goal:
         if max_steps < MAX_STEPS:
             max_steps += 2
-        #print(f"max_steps incremented to {max_steps}")
         for seq in population:
             if seq != champion_sequence:
                 while len(seq) < max_steps:
